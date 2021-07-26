@@ -27,7 +27,7 @@ async def nine_nine(ctx):
     await ctx.send(response)
 
 
-@bot.command(name='create-channel', help="creates a new channel")
+@bot.command(name='create-channel', help="creates a new text channel")
 @commands.has_role('admin')
 async def create_channel(ctx, channel_name='real-python'):
     guild = ctx.guild
@@ -35,6 +35,21 @@ async def create_channel(ctx, channel_name='real-python'):
     if not existing_channel:
         print(f'Creating a new channel: {channel_name}')
         await guild.create_text_channel(channel_name)
+
+
+@bot.command(name='delete-channel', help='delete a channel with the specified name')
+@commands.has_role("admin")
+async def delete_channel(ctx, channel_name):
+    # check if the channel exists
+    guild = ctx.guild
+    existing_channel = discord.utils.get(guild.channels, name=channel_name)
+
+    # if the channel exists
+    if existing_channel is not None:
+        await existing_channel.delete()
+    # if the channel does not exist, inform the user
+    else:
+        await ctx.send(f'No channel named, "{channel_name}", was found')
 
 
 @bot.command(name="d6", help="Rolls a six sided dice")
