@@ -2,6 +2,7 @@
 import os
 import random
 
+import github_requests as GR
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -58,10 +59,30 @@ async def roll_d6(ctx):
     await ctx.send(dice)
 
 
+@bot.command(name="get_repos", help="Returns the name of the repositories of a github account")
+async def get_repos(ctx, username: str):
+    try:
+        repos = GR.get_repositories(username)
+        repo_string = build_string(repos)
+        await ctx.send(repo_string)
+
+    except():
+        print("failed")
+
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You do not have the correct role for this command.')
+
+
+# Takes in an array of strings and returns a single string
+def build_string(array: [str]):
+    # todo - look for other options to append strings.
+    string = ""
+    for repo in array:
+        string = string + repo + "\n"
+    return string
 
 
 if __name__ == "__main__":
